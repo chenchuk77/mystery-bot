@@ -1,0 +1,237 @@
+<!--
+    Winhweel.js basic code wheel example by Douglas McKechie @ www.dougtesting.net
+    See website for tutorials and other documentation.
+
+    The MIT License (MIT)
+
+    Copyright (c) 2016 Douglas McKechie
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in all
+    copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+    SOFTWARE.
+-->
+<html>
+    <head>
+        <title>HTML5 Canvas Winning Wheel</title>
+        <link rel="stylesheet" href="main.css" type="text/css" />
+        <script type="text/javascript" src="Winwheel.js"></script>
+        <script src="http://cdnjs.cloudflare.com/ajax/libs/gsap/latest/TweenMax.min.js"></script>
+    </head>
+    <body>
+        <div align="center">
+            <table cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                    <td width="438" height="582" class="the_wheel" align="center" valign="center">
+                        <canvas id="canvas" width="434" height="434">
+                            <p style="{color: white}" align="center">Sorry, your browser doesn't support canvas. Please try another.</p>
+                        </canvas>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <script>
+            // -------------------------------------------------------
+            // Function to handle the onClick on the power buttons.
+            // -------------------------------------------------------
+            function powerSelected(powerLevel)
+            {
+                // Ensure that power can't be changed while wheel is spinning.
+                if (wheelSpinning == false) {
+                    // Reset all to grey incase this is not the first time the user has selected the power.
+                    document.getElementById('pw1').className = "";
+                    document.getElementById('pw2').className = "";
+                    document.getElementById('pw3').className = "";
+
+                    // Now light up all cells below-and-including the one selected by changing the class.
+                    if (powerLevel >= 1) {
+                        document.getElementById('pw1').className = "pw1";
+                    }
+
+                    if (powerLevel >= 2) {
+                        document.getElementById('pw2').className = "pw2";
+                    }
+
+                    if (powerLevel >= 3) {
+                        document.getElementById('pw3').className = "pw3";
+                    }
+
+                    // Set wheelPower var used when spin button is clicked.
+                    wheelPower = powerLevel;
+
+                }
+            }
+
+            // -------------------------------------------------------
+            // Click handler for spin button.
+            // -------------------------------------------------------
+            function startSpin()
+            {
+                // Ensure that spinning can't be clicked again while already running.
+                if (wheelSpinning == false) {
+                    // Based on the power level selected adjust the number of spins for the wheel, the more times is has
+                    // to rotate with the duration of the animation the quicker the wheel spins.
+                    if (wheelPower == 1) {
+                        theWheel.animation.spins = 3;
+                    } else if (wheelPower == 2) {
+                        theWheel.animation.spins = 8;
+                    } else if (wheelPower == 3) {
+                        theWheel.animation.spins = 15;
+                    }
+
+
+                    // Begin the spin animation by calling startAnimation on the wheel object.
+                    theWheel.startAnimation();
+
+                    // Set to true so that power can't be changed and spin button re-enabled during
+                    // the current animation. The user will have to reset before spinning again.
+                    wheelSpinning = true;
+                }
+            }
+
+
+            // -------------------------------------------------------
+            // Function for reset button.
+            // -------------------------------------------------------
+            function resetWheel()
+            {
+                theWheel.stopAnimation(false);  // Stop the animation, false as param so does not call callback function.
+                theWheel.rotationAngle = 0;     // Re-set the wheel angle to 0 degrees.
+                theWheel.draw();                // Call draw to render changes to the wheel.
+
+                document.getElementById('pw1').className = "";  // Remove all colours from the power level indicators.
+                document.getElementById('pw2').className = "";
+                document.getElementById('pw3').className = "";
+
+                wheelSpinning = false;          // Reset to false to power buttons and spin can be clicked again.
+            }
+
+            // -------------------------------------------------------
+            // Called when the spin animation has finished by the callback feature of the wheel because I specified callback in the parameters
+            // note the indicated segment is passed in as a parmeter as 99% of the time you will want to know this to inform the user of their prize.
+            // -------------------------------------------------------
+            function alertPrize(indicatedSegment)
+            {
+                // Do basic alert of the segment text. You would probably want to do something more interesting with this information.
+                // alert("You have won " + indicatedSegment.text);
+                global_won = indicatedSegment.text;
+                console.log('won: ' + global_won);
+
+            }
+
+            // -------------- start execution --------------
+
+            // get url params into an array
+            // example call: "http://localhost:8282/index.html?p[]=430&p[]=440&p[]=2700&p[]=4140&p[]=430&p[]=430"
+
+            const fullUrl = window.location.href;
+            url = new URL(fullUrl);
+            prizepool = url.searchParams.get("t");
+            prizes = url.searchParams.getAll("p[]");
+
+            // python will read this value to know the winner
+            var global_won = '';
+
+            // generate segments from url params
+            let segments = []
+            //let colors = [ '#eae56f', '#89f26e', '#7de6ef', '#e7706f' ]
+            //let colors = [ '#6BEE58', '#58EEBB', '#A858EE', '#EEDD42', '#EEA442', '#42D3EE', '#EE427D', '#69A4F1', '#D38EE1' ]
+            let bad_colors = [ '#C5CAE9', '#BBDEFB', '#B2DFDB', '#C8E6C9' ]
+
+            color_ranks = {
+                1: "#EEFF41",
+                2: "#FF9100",
+                3: "#FFC400",
+                4: "#FFEA00",
+                5: "#FFF176",
+                6: "#B2FF59",
+                7: "#69F0AE",
+                8: "#7CB342",
+                9: "#B2DFDB",
+                10: "#BBDEFB",
+                11: "#C5CAE9"
+            }
+
+            function get_color(prize){
+                //     prizes_percentage = [20, 15, 11, 9, 6.5, 5, 4, 3, 2, 1.18, 1.12, 1.06, 1.01, 0.95, 0.9]
+
+                // set default bad color
+                var color = '';
+                //var color = color[Math.floor(Math.random()*bad_colors.length)];
+
+                v = 100*(prize/prizepool);
+                console.log( `v: ${v}`);
+
+                if (100*(prize/prizepool) > 19.5) {
+                    color = color_ranks[1];
+                } else if (100*(prize/prizepool) > 13.5) {
+                    color = color_ranks[2];
+                } else if (100*(prize/prizepool) > 10.0) {
+                    color = color_ranks[3];
+                } else if (100*(prize/prizepool) > 8.0) {
+                    color = color_ranks[4];
+                } else if (100*(prize/prizepool) > 5.5) {
+                    color = color_ranks[5];
+                } else if (100*(prize/prizepool) > 4.5) {
+                    color = color_ranks[6];
+                } else if (100*(prize/prizepool) > 3.5) {
+                    color = color_ranks[7];
+                } else if (100*(prize/prizepool) > 2.5) {
+                    color = color_ranks[8];
+                } else if (100*(prize/prizepool) > 1.5) {
+                    color = color_ranks[9];
+                } else {
+                    color = bad_colors[Math.floor(Math.random()*bad_colors.length)];
+                    //color = color_ranks[10];
+                }
+                console.log( `prize: ${prize}, color: ${color}`)
+                return color
+            }
+
+            for (prize in prizes) {
+                //var color = colors[Math.floor(Math.random()*colors.length)];
+                //segments.push({'fillStyle' : color, 'text' : prizes[prize]});
+                segments.push({'fillStyle' : get_color(prizes[prize]), 'text' : prizes[prize]});
+
+            }
+
+            // Create new wheel object specifying the parameters at creation time.
+            let theWheel = new Winwheel({
+                'numSegments'  : prizes.length,     // Specify number of segments.
+                'outerRadius'  : 212,   // Set outer radius so wheel fits inside the background.
+                'textFontSize' : 28,    // Set font size as desired.
+                'segments'     : segments,
+                'animation' :           // Specify the animation to use.
+                {
+                    'type'     : 'spinToStop',
+                    'duration' : 5,     // Duration in seconds.
+                    'spins'    : 8,     // Number of complete spins.
+                    'callbackFinished' : alertPrize
+                }
+            });
+
+            // start wheel after 3 seconds for recording
+            setTimeout(startSpin, 3000);
+
+
+            // Vars used by the code in this page to do power controls.
+            let wheelPower    = 0;
+            let wheelSpinning = false;
+
+
+        </script>
+    </body>
+</html>
