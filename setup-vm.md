@@ -18,6 +18,11 @@ cd mystery-bot
 pip install -r requirements.txt
 
 
+install docker and post install
+restart vm
+
+./build-wheel-image.sh
+
 ```
 6. 
 7. 

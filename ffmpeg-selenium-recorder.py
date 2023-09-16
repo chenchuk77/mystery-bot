@@ -5,6 +5,7 @@ import signal  # <-- Add this import
 import os
 
 
+
 def get_wheel_url(prizes, prizepool):
     url = 'http://localhost:8282/index.html?t={}'.format(prizepool)
     for prize in prizes:
@@ -13,11 +14,15 @@ def get_wheel_url(prizes, prizepool):
     return url
 
 
+# SCREEN_RES="3840x2160"
+# SCREEN_RES="1360x768"
 
 def spin_and_record(prizes, prizepool):
     output_file='output-{}.mp4'.format(str(len(prizes)))
     # cmd = "sleep 2s && ffmpeg -f x11grab -video_size 500x510 -i :0.0+700,75 {} > /dev/null 2>&1".format(output_file)
-    cmd = "sleep 4s && ffmpeg -y -t 7 -f x11grab -video_size 500x500 -i :0.0+700,100 {}".format(output_file)
+    #cmd = "sleep 4s && ffmpeg -y -t 7 -f x11grab -video_size 500x500 -i :0.0+700,100 {}".format(output_file)
+    cmd = "sleep 4s && ffmpeg -y -t 7 -f x11grab -video_size 500x400 -i :0.0+470,100 {}".format(output_file)
+    # cmd = "sleep 4s && ffmpeg -y -t 7 -f x11grab -video_size 250x250 -i :0.0+350,50 {}".format(output_file)
     ffmpeg_process = subprocess.Popen(cmd, shell=True, preexec_fn=lambda: signal.signal(signal.SIGINT, signal.SIG_IGN))
 
     # Start the Selenium WebDriver
