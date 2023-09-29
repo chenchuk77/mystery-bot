@@ -10,7 +10,7 @@ and then  generates a list of prizes, and provide a button to spin the wheel.
 
 When a KO occurs, the operator press the spin button and send the player name to the bot.
 
-The bot generated a video of the spinning and send it to a Telegram group.
+The bot generates a video of the spinning and send it to a Telegram group.
 It also sends nice text with emojis and image based on the prize's rank
 (the top 3 prizes got some special messages and images)  
 
