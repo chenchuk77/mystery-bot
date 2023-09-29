@@ -32,10 +32,16 @@ def announce_winner(winner, prize, game):
     return winning_message
 
 
-def build_winning_string(list_of_lines, winner, prize):
-    message_string = "\n".join(list_of_lines)
-    message_string = message_string.format(winner=winner, prize=to_nice_numbers(prize))
-    return message_string
+def build_winning_string(lines, winner, prize):
+    s = "\n".join(lines)
+    s = s.format(winner=winner, prize=to_nice_numbers(prize))
+    return s
+
+
+def build_starting_string(lines, game):
+    s = "\n".join(lines)
+    s = s.format(name=game['name'], num_of_prizes=str(len(game['prizes'])), prizepool=str(game['prizepool']))
+    return s
 
 
 def get_winner_image(prize, game):

@@ -171,8 +171,13 @@ async def start_game(message: types.Message):
         #random.shuffle(prizes)
         game['prizes'] = prizes
 
+        # send starting message to group
+        await bot.send_message(chat_id, effects.build_starting_string(game['config']['main']['starting_message'], game))
+
+
         await message.answer('Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\nprizes: {}\nmax_prize: {}'.
                              format(game['name'], str(game['itm_players']), str(game['prizepool']), str(game['prizes']), str(game['1st'])), reply_markup=winner_kb)
+
 
     else:
         logger.warning("game setup incomplete, ignoring")

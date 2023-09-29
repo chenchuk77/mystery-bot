@@ -5,6 +5,22 @@ config:
     welcome_message:
       - "Im the mystery-bounty-bot"
       - "press the menu button to setup a new game ..."
+    starting_message:
+      - "Starting tournament: {name}"
+      - "with {num_of_prizes} prizes"
+      - ""
+      - "   Total prizepool: {prizepool}"
+      - ""
+      - "      ♥♣♦♠"
+      - "    GOOD LUCK  "
+      - "      ♥♣♦♠"
+    spinning_message:
+      - "   🤞  🤞  🤞"
+      - "Spinning the wheel"
+      - "  for {winner}"
+      - "   🤞  🤞  🤞"
+      - "  🪬🪬🪬 GOOD LUCK 🪬🪬🪬    "
+      - ""
   ffmpeg:
     command: "sleep 6s && ffmpeg -y -t 7 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}"
     #command: "sleep 1s && ffmpeg -y -t 1 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}" # testing no real video

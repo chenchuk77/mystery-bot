@@ -143,8 +143,11 @@ $ pip3 install -r requirements.txt
 
 ### NOTES
 * wheel graphics WAS NOT developed by me TODO: PUT LINK
-
+* video time being advertised after 15-20 sec
 
 ### TODO:
 * support virtual screen somehow ( maybe selenium ) to emulate a screen recording without a real screen.
 * run inside a docker container
+* advertise prizes upon starting
+* fix nonworking button "show remaining prizes"
+* add "spinning the wheel for .... on the group channel"
