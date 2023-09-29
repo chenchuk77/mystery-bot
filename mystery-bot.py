@@ -172,7 +172,7 @@ async def start_game(message: types.Message):
         game['prizes'] = prizes
 
         # send starting message to group
-        await bot.send_message(chat_id, effects.build_starting_string(game['config']['main']['starting_message'], game))
+        #await bot.send_message(chat_id, effects.build_starting_string(game['config']['main']['starting_message'], game))
 
 
         await message.answer('Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\nprizes: {}\nmax_prize: {}'.
