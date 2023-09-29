@@ -3,16 +3,11 @@
 config:
   main:
     welcome_message:
-      - Im the mystery-bounty-bot
-      - press the menu button to setup a new game ...
-
+      - "Im the mystery-bounty-bot"
+      - "press the menu button to setup a new game ..."
   ffmpeg:
     command: "sleep 6s && ffmpeg -y -t 7 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}"
     #command: "sleep 1s && ffmpeg -y -t 1 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}" # testing no real video
-
-
-Im the mystery-bounty-bot ...\npress the menu button to setup a new game ...
-
 
 messages:
   normal_prize:
