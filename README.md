@@ -107,14 +107,15 @@ http://localhost:8282/index.html?t=30000&p[]=336&p[]=303&p[]=510&p[]=6042&p[]=31
 ```
 
 ### Technical stuff - How does it work ?
-The operator setup few params and calculates the bounties. 
-When a KO occurs, the operator spin the wheel by pressing a button on the bot channel
-1. Bot open browser using selenium driver tp the wheel-web-server
-2. Bot send url params with prizepoool and remaining prizes
-3. Wheel server build the wheel and spin it
-4. Python using ffmpeg to generate video 
-5 bot closes selenium, and update itself with remaining prizes
-6 bot sends the video and messages to a dedicated telegram channel
+Wheel is running as a webpage using Javascript/CSS (NOT MY CODE, SEE BELOW).
+
+FFMPEG tool is used to record the screen and create a mp4 video file.
+
+Bot is responsible for:
+1. calculate prizes based on inputs
+2. emulates browsing to the wheel page and record mp4 file
+3. announce the group with the results
+4.manage wins and removed from remaining bounties
 
 
 ### Bot commands
