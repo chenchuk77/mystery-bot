@@ -11,6 +11,8 @@ import random
 import effects
 import asyncio
 
+import yaml
+from pathlib import Path
 
 calculator = importlib.import_module("bounty-calculator")
 channel_client = importlib.import_module("channel-client")
@@ -42,14 +44,12 @@ game = {
     '1st': 0,
     '2nd': 0,
     '3rd': 0,
-    # image[0] is for low bounties, image[1] for 1st ... image[2] for 2nd ...
-    'images': ['images/tilt.webp',
-               'images/omg.webp',
-               'images/running_hot.webp',
-               'images/running_hot_elki.webp']
+    'messages': {},
+    'config': {}
 }
 
 final_prizes = []
+# config = {}
 
 
 # used to check the function to handle arbitrary text (default text)
@@ -71,19 +71,10 @@ winner_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).ad
 
 async def advertise_winner(winner, prize):
     nice_prize = effects.to_nice_numbers(prize)
-    await bot.send_message(chat_id, effects.announce_winner(winner, prize, game))
-
-    # setting image to send
-    imagefile = ''
-    if prize == game['1st']:
-        imagefile = game['images'][1]
-    elif prize == game['2nd']:
-        imagefile = game['images'][2]
-    elif prize == game['3rd']:
-        imagefile = game['images'][3]
-    else:
-        imagefile = game['images'][0]
-
+    winner_message = effects.announce_winner(winner, prize, game)
+    print('hello')
+    await bot.send_message(chat_id, winner_message)
+    imagefile = effects.get_winner_image(prize, game)
     with open(imagefile, 'rb') as image_file:
         await bot.send_animation(chat_id, image_file)
 
@@ -91,27 +82,28 @@ async def advertise_winner(winner, prize):
 async def sleep(s):
     time.sleep(s)
 
-async def send_gif(winner):
-    with open("wheel-{}.gif".format(winner), 'rb') as gif_file:
-        await bot.send_animation(chat_id, gif_file)
 
 async def send_video(filename):
     with open(filename, 'rb') as mp4_file:
         await bot.send_video(chat_id, mp4_file)
 
-        # await bot.send_animation(chat_id, mp4_file)
+
+def reload_config():
+    logger.info("reload() called ...")
+    global game
+    yaml_config = yaml.safe_load(Path('config.yml').read_text())
+    game['messages'] = yaml_config['messages']
+    game['config'] = yaml_config['config']
+    logger.info("messages configuration refreshed.")
 
 
-
-@dp.message_handler(commands=['x'])
-async def x(message: types.Message):
+@dp.message_handler(commands=['reload'])
+async def reload(message: types.Message):
     global last_function
-    logger.info("x() called ...")
-    last_function = 'start'
-    await bot.send_message(chat_id, "congrats {} 💪💪💪\nyou won {} 💰💰💰\n".format('asaf', effects.to_nice_numbers(2500)))
-    #await message.answer('Im the mystery-bounty-bot ...\npress the menu button to setup a new game ...', reply_markup=setup_kb)
-
-
+    logger.info("reload() called ...")
+    last_function = 'reload'
+    reload_config()
+    await bot.send_message(chat_id, "configuraion reloaded.")
 
 
 @dp.message_handler(commands=['start'])
@@ -119,17 +111,9 @@ async def start(message: types.Message):
     global last_function
     logger.info("start() called ...")
     last_function = 'start'
-
-    # normal mode
-    #await message.answer('Im the mystery-bounty-bot ...\npress the menu button to setup a new game ...', reply_markup=setup_kb)
-
-    # debug mode
-
-    #output_file=""
-    #await bot.send_photo(message.chat.id, output_file)
-
-
-    await message.answer('Im the mystery-bounty-bot ...\npress the menu button to setup a new game ...', reply_markup=start_kb)
+    reload_config()
+    welcome_message = effects.message_from_list(game['config']['main']['welcome_message'])
+    await message.answer(welcome_message, reply_markup=start_kb)
 
 
 @dp.message_handler(regexp='Set tournament name 📜📜📜')
@@ -140,6 +124,7 @@ async def set_name(message: types.Message):
     await message.answer('What is the tournament name ?')
     # game['name'] = message.text
 
+
 @dp.message_handler(regexp='Set ITM players 💪💪💪')
 async def set_itm_players(message: types.Message):
     global last_function
@@ -147,6 +132,7 @@ async def set_itm_players(message: types.Message):
     last_function = 'set_itm_players'
     await message.answer('How many players are ITM ?')
     # game['itm_players'] = int(message.text)
+
 
 @dp.message_handler(regexp='Set prizepool 💰💰💰')
 async def set_prizepool(message: types.Message):
@@ -156,13 +142,13 @@ async def set_prizepool(message: types.Message):
     await message.answer('What is the bounty prizepool ?')
     # game['itm_players'] = int(message.text)
 
+
 @dp.message_handler(regexp='☸️☸️☸️ Start game ☸️☸️☸️')
 async def start_game(message: types.Message):
     global last_function
     logger.info("start_game() called ...")
     last_function = 'start_game'
     if game['name'] != '' and game['itm_players'] > 0 and game['prizepool'] > 0:
-        #await message.answer('What is the bounty prizepool ?')
         logger.info("game: {} started ...".format(game['name']))
         game['is_running'] = True
 
@@ -200,8 +186,6 @@ async def start_wheel(message: types.Message):
     await message.answer('Who wins the KO ?\n')
 
 
-
-
 # generic default handler for all ( must be declared LAST ! )
 @dp.message_handler()
 async def default(message: types.Message):
@@ -225,17 +209,13 @@ async def default(message: types.Message):
             logger.info("remaining prizes before: {} ...".format(str(len(game['prizes']))))
 
             # record video
-            prize, output_file = recorder.spin_and_record(game['prizes'], game['prizepool'])
+            prize, output_file = recorder.spin_and_record(game)
 
             # send video
             await send_video(output_file)
             logger.info("{} won {} .".format(winner, prize))
 
             # remove the prize from remaining prizes
-
-
-            # print('prizes: {}\nstr(prize): {}'.format(game['prizes'], str(prize)))
-
             game['prizes'].remove(prize)
             logger.info("remaining prizes after: {} ...".format(str(len(game['prizes']))))
 
@@ -244,26 +224,11 @@ async def default(message: types.Message):
             except Exception as e:
                 logger.error(e)
 
-            # await bot.send_animation(message.chat.id, output_file)
-            # winner = message.text
-            # logger.info("spinning for: {} ...".format(winner))
-            # logger.info("remaining prizes before: {} ...".format(str(len(game['prizes']))))
-            # prize = calculator.spin_wheel(game['prizes'], winner)
-            # logger.info("{} won {} .".format(winner, prize))
-            # game['prizes'] = game['prizes'][1:]
-            # logger.info("remaining prizes after: {} ...".format(str(len(game['prizes']))))
             await sleep(7)
             await advertise_winner(winner, prize)
-            # await send_gif(winner)
-
             await message.answer('Open menu for next KO...',reply_markup=winner_kb)
-
-
-
         else:
             logger.warning("we shouldnt be here ... ")
-
-        print('dd')
     else:
         if game['name'] != '' and game['itm_players'] > 0 and game['prizepool'] > 0:
             print('setup complete, adding start_game button')

@@ -1,0 +1,54 @@
+---
+
+config:
+  main:
+    welcome_message:
+      - Im the mystery-bounty-bot
+      - press the menu button to setup a new game ...
+
+  ffmpeg:
+    command: "sleep 6s && ffmpeg -y -t 7 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}"
+    #command: "sleep 1s && ffmpeg -y -t 1 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}" # testing no real video
+
+
+Im the mystery-bounty-bot ...\npress the menu button to setup a new game ...
+
+
+messages:
+  normal_prize:
+    image: images/tilt.webp
+    text:
+      - "{winner} won !"
+      - "    {prize}"
+      - "🤦‍♂️   nevermind 🤦‍♂️"
+      - "🤦‍♂️ money is money 🤦‍♂️"
+  first_prize:
+    image: images/omg.webp
+    text:
+      - "🤑🤑🤑 😱😱😱"
+      - "{winner} מלך המיסטרי לוקח את הפרס הראשון"
+      - ""
+      - "{prize}"
+      - ""
+      - "🤑🤑🤑 😱😱😱"
+      - ""
+  second_prize:
+    image: images/running_hot_elki.webp
+    text:
+      - "🤑🤑🤑 😱😱😱"
+      - "{winner} האלוף לוקח את הפרס השני"
+      - ""
+      - "{prize}"
+      - ""
+      - "🤑🤑🤑 😱😱😱"
+      - ""
+  third_prize:
+    image: images/running_hot.webp
+    text:
+      - "🤑🤑🤑 😱😱😱"
+      - "{winner} התותח לוקח את הפרס השלישי"
+      - ""
+      - "{prize}"
+      - ""
+      - "🤑🤑🤑 😱😱😱"
+      - ""

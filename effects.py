@@ -13,7 +13,6 @@ def to_nice_numbers(number):
         '8': '8⃣',
         '9': '9⃣'
     }
-
     number_string = str(number)
     for digit in number_string:
         nice_numbers = nice_numbers + nice_dict[digit]
@@ -21,12 +20,36 @@ def to_nice_numbers(number):
 
 
 def announce_winner(winner, prize, game):
-    # used to generate specific announcements
+    winning_message = ""
     if prize == game['1st']:
-        return "🤑🤑🤑 😱😱😱" + "\n" + winner + "מלך המיסטרי לוקח את הפרס הראשון" + "\n" + to_nice_numbers(prize) + "\n" + "🤑🤑🤑 😱😱😱"
+        winning_message = build_winning_string(game['messages']['first_prize']['text'], winner, prize)
     elif prize == game['2nd']:
-        return "🤑🤑🤑 😱😱😱" + "\n" + winner + "האלוף לוקח את הפרס השני" + "\n" + to_nice_numbers(prize) + "\n" + "🤑🤑🤑 😱😱😱"
+        winning_message = build_winning_string(game['messages']['second_prize']['text'], winner, prize)
     elif prize == game['3rd']:
-        return "🤑🤑🤑 😱😱😱" + "\n" + winner + "התותח לוקח את הפרס השלישי" + "\n" + to_nice_numbers(prize) + "\n" + "🤑🤑🤑 😱😱😱"
+        winning_message = build_winning_string(game['messages']['third_prize']['text'], winner, prize)
     else:
-        return winner + "\n" + "🤦‍♂️ יכול להיות יותר טוב 🤦‍♂️" + "\n" + "🤦‍♂️ אבל כסף זה כסף ... 🤦‍♂️" + "\n" + "🤩🤩🤩🤩🤩🤩" + "\n" + "זכית ב" + "\n" + to_nice_numbers(prize) + "\n"
+        winning_message = build_winning_string(game['messages']['normal_prize']['text'], winner, prize)
+    return winning_message
+
+
+def build_winning_string(list_of_lines, winner, prize):
+    message_string = "\n".join(list_of_lines)
+    message_string = message_string.format(winner=winner, prize=to_nice_numbers(prize))
+    return message_string
+
+
+def get_winner_image(prize, game):
+    imagefile = ""
+    if prize == game['1st']:
+        imagefile = game['messages']['first_prize']['image']
+    elif prize == game['2nd']:
+        imagefile = game['messages']['second_prize']['image']
+    elif prize == game['3rd']:
+        imagefile = game['messages']['third_prize']['image']
+    else:
+        imagefile = game['messages']['normal_prize']['image']
+    return imagefile
+
+
+def message_from_list(list_of_lines):
+    return "\n".join(list_of_lines)

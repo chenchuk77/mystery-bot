@@ -1,15 +1,5 @@
 
 
-config: {
-    'ffmpeg_command': "sleep 6s && ffmpeg -y -t 7 -f x11grab -video_size 475x480 -i :0.0+162,100 {}",
-
-
-}
-
-messages: {
-    '1st': "🤑🤑🤑 😱😱😱" + "\n" + winner + "מלך המיסטרי לוקח את הפרס הראשון" + "\n" + to_nice_numbers(prize) + "\n" + "🤑🤑🤑 😱😱😱"
-}
-
 def to_nice_numbers(number):
     nice_numbers = ''
     nice_dict = {
