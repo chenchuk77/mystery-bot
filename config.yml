@@ -15,12 +15,21 @@ config:
       - "    GOOD LUCK  "
       - "      ♥♣♦♠"
     spinning_message:
-      - "   🤞  🤞  🤞"
-      - "Spinning the wheel"
-      - "  for {winner}"
-      - "   🤞  🤞  🤞"
-      - "  🪬🪬🪬 GOOD LUCK 🪬🪬🪬    "
       - ""
+      - "{winner} זכה ב KO !!!"
+      - ""
+      - "      ♥♣♦♠"
+      - "מכינים את גלגל המזל"
+      - ""
+      - "    🤞 🤞 🤞"
+      - ""
+      - "בהצלחה !!!   "
+      - ""
+      - "    🪬 🪬 🪬 🪬 🪬"
+      - ""
+    ko_image: images/ko.jpg
+
+
   ffmpeg:
     command: "sleep 6s && ffmpeg -y -t 7 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}"
     #command: "sleep 1s && ffmpeg -y -t 1 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}" # testing no real video

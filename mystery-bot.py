@@ -62,7 +62,8 @@ setup3 = KeyboardButton('Set prizepool 💰💰💰')
 setup_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(setup1).add(setup2).add(setup3)
 
 start1 = KeyboardButton('☸️☸️☸️ Start game ☸️☸️☸️')
-start_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(setup1).add(setup2).add(setup3).add(start1)
+start_kb = ReplyKeyboardMarkup(resize_keyboard=True, one_time_keyboard=True).add(setup1).add(setup2).add(setup3).add(
+    start1)
 
 win1 = KeyboardButton('🤞🏻🤞🏻🤞🏻 start the wheel 🤞🏻🤞🏻🤞🏻')
 win2 = KeyboardButton('show remaining bounties')
@@ -89,7 +90,7 @@ async def send_video(filename):
 
 
 def reload_config():
-    logger.info("reload() called ...")
+    logger.info("reload_config() called ...")
     global game
     yaml_config = yaml.safe_load(Path('config.yml').read_text())
     game['messages'] = yaml_config['messages']
@@ -168,16 +169,16 @@ async def start_game(message: types.Message):
         logger.info("biggest prizes: {}".format(str(game['1st']), str(game['2nd']), str(game['3rd'])))
 
         logger.info("shuffling prizes ...")
-        #random.shuffle(prizes)
+        # random.shuffle(prizes)
         game['prizes'] = prizes
 
         # send starting message to group
-        #await bot.send_message(chat_id, effects.build_starting_string(game['config']['main']['starting_message'], game))
+        await bot.send_message(chat_id, effects.build_starting_string(game['config']['main']['starting_message'], game))
 
-
-        await message.answer('Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\nprizes: {}\nmax_prize: {}'.
-                             format(game['name'], str(game['itm_players']), str(game['prizepool']), str(game['prizes']), str(game['1st'])), reply_markup=winner_kb)
-
+        await message.answer(
+            'Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\nprizes: {}\nmax_prize: {}'.
+            format(game['name'], str(game['itm_players']), str(game['prizepool']), str(game['prizes']),
+                   str(game['1st'])), reply_markup=winner_kb)
 
     else:
         logger.warning("game setup incomplete, ignoring")
@@ -206,12 +207,30 @@ async def default(message: types.Message):
         game['itm_players'] = int(message.text)
     if last_function == 'set_prizepool':
         game['prizepool'] = int(message.text)
+    # if last_function == 'start_wheel':
+    #     winner_name = message.text
 
     if game['is_running']:
         if last_function == 'start_wheel':
             winner = message.text
             logger.info("spinning for: {} ...".format(winner))
             logger.info("remaining prizes before: {} ...".format(str(len(game['prizes']))))
+
+            # alert the groupwith KO image
+            arr = [game['config']['main']['ko_image']]
+            ko_image = open(random.choice(arr), "rb")
+            await bot.send_photo(chat_id, ko_image)
+
+
+            # try:
+            #     await bot.send_photo(message.chat.id, game['config']['main']['ko_image'])
+            # except Exception as e:
+            #     logger.error(e)
+
+
+            # alert the group before spinning the wheel
+            await bot.send_message(chat_id, effects.build_spinning_string(
+                game['config']['main']['spinning_message'], winner))
 
             # record video
             prize, output_file = recorder.spin_and_record(game)
@@ -231,19 +250,24 @@ async def default(message: types.Message):
 
             await sleep(7)
             await advertise_winner(winner, prize)
-            await message.answer('Open menu for next KO...',reply_markup=winner_kb)
+            await message.answer('Open menu for next KO...', reply_markup=winner_kb)
         else:
             logger.warning("we shouldnt be here ... ")
     else:
         if game['name'] != '' and game['itm_players'] > 0 and game['prizepool'] > 0:
             print('setup complete, adding start_game button')
             logger.info("setup complete, adding start_game button'")
-            await message.answer('Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\n'.format(game['name'], str(game['itm_players']), str(game['prizepool'])), reply_markup=start_kb)
+            await message.answer(
+                'Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\n'.format(game['name'], str(
+                    game['itm_players']), str(game['prizepool'])), reply_markup=start_kb)
         else:
             logger.info("setup incomplete, removing start_game button'")
-            await message.answer('Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\n'.format(game['name'], str(game['itm_players']), str(game['prizepool'])), reply_markup=setup_kb)
+            await message.answer(
+                'Current tournament config:\nname: {}\nITM players: {}\nPrizepool: {}\n'.format(game['name'], str(
+                    game['itm_players']), str(game['prizepool'])), reply_markup=setup_kb)
 
     last_function = 'default'
+
 
 # this is the last line
 executor.start_polling(dp)

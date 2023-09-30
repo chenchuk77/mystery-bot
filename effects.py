@@ -44,6 +44,12 @@ def build_starting_string(lines, game):
     return s
 
 
+def build_spinning_string(lines, winner):
+    s = "\n".join(lines)
+    s = s.format(winner=winner)
+    return s
+
+
 def get_winner_image(prize, game):
     imagefile = ""
     if prize == game['1st']:
