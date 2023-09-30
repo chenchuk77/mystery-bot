@@ -216,10 +216,10 @@ async def default(message: types.Message):
             logger.info("spinning for: {} ...".format(winner))
             logger.info("remaining prizes before: {} ...".format(str(len(game['prizes']))))
 
-            # alert the groupwith KO image
-            arr = [game['config']['main']['ko_image']]
-            ko_image = open(random.choice(arr), "rb")
-            await bot.send_photo(chat_id, ko_image)
+            # # alert the groupwith KO image
+            # arr = [game['config']['main']['ko_image']]
+            # ko_image = open(random.choice(arr), "rb")
+            # await bot.send_photo(chat_id, ko_image)
 
 
             # try:
