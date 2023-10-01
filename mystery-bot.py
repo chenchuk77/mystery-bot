@@ -241,7 +241,7 @@ async def default(message: types.Message):
             except Exception as e:
                 logger.error(e)
 
-            await sleep(7)
+            await sleep(game['config']['main']['winner_text_delay'])
             await advertise_winner(winner, prize)
             await message.answer('Open menu for next KO...', reply_markup=winner_kb)
         else:
