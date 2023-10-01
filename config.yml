@@ -31,7 +31,7 @@ config:
       - "     🪬 🪬 🪬 🪬 🪬"
     ko_image: images/ko.jpg
 
-  winner_text_delay: 8 # delay after sending the wheel
+    winner_text_delay: 8 # delay after sending the wheel
   ffmpeg:
     command: "sleep 6s && ffmpeg -y -t 7 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}"
     #command: "sleep 1s && ffmpeg -y -t 1 -f x11grab -video_size 475x480 -i :0.0+162,100 {outfile}" # testing no real video
