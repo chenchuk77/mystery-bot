@@ -3,8 +3,10 @@
 config:
   main:
     welcome_message:
-      - "Im the mystery-bounty-bot"
-      - "press the menu button to setup a new game ..."
+      - "Hello"
+      - "Im the Mystery-Bot, and im here to manage a Mystery-Bounty poker tournaments."
+      - ""
+      - "Press the menu button to setup a new game ..."
     starting_message:
       - "Starting tournament: {name}"
       - "with {num_of_prizes} prizes"
@@ -12,21 +14,21 @@ config:
       - "   Total prizepool: {prizepool}"
       - ""
       - "      ♥♣♦♠"
-      - "    GOOD LUCK  "
+      - "בהצלחה !!!   "
       - "      ♥♣♦♠"
     spinning_message:
       - ""
-      - "{winner} זכה ב KO !!!"
+      - "♥♣♦♠ {winner} ♥♣♦♠"
+      - " זכה בנוקאאוט !!!  
       - ""
-      - "      ♥♣♦♠"
+      - "      ♥ ♣ ♦ ♠"
       - "מכינים את גלגל המזל"
       - ""
-      - "    🤞 🤞 🤞"
+      - "      🤞 🤞 🤞"
       - ""
-      - "בהצלחה !!!   "
+      - "בהצלחה !!!    "
       - ""
-      - "    🪬 🪬 🪬 🪬 🪬"
-      - ""
+      - "     🪬 🪬 🪬 🪬 🪬"
     ko_image: images/ko.jpg
 
 
