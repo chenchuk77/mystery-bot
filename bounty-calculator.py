@@ -158,11 +158,12 @@ def generate_winning_pattern(itm, prizepool):
     # default distribution ( note that last 4 have more than 1 winning options corresponds to [...2,4,4,4]
     prizes_percentage = [20, 15, 11, 9, 6.5, 5, 4, 3, 2, 1.18, 1.12, 1.06, 1.01, 0.95, 0.9]
 
-    # padding the rest with 0.8 % bounty
-    extra = itm - sum(first_25)
-    extra_percent = 8.5 / extra
-    first_25.append(extra)
-    prizes_percentage.append(extra_percent)
+    if itm > 25:
+        # padding the rest with 0.8 % bounty
+        extra = itm - sum(first_25)
+        extra_percent = 8.5 / extra
+        first_25.append(extra)
+        prizes_percentage.append(extra_percent)
 
     final_prizes = []
     for i in range(len(first_25)):
