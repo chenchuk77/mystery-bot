@@ -9,12 +9,13 @@ config:
       - "Press the menu button to setup a new game ..."
     starting_message:
       - "Starting tournament: {name}"
+      - ""
       - "with {num_of_prizes} prizes"
       - ""
       - "   Total prizepool: {prizepool}"
       - ""
       - "      ♥♣♦♠"
-      - "בהצלחה !!!   "
+      - "   GOOD LUCK ❗"
       - "      ♥♣♦♠"
     spinning_message:
       - "♥♣♦♠ {winner} ♥♣♦♠"
